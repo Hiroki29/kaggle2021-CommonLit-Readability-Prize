@@ -48,7 +48,7 @@ kaggle2021-Molecular-Translation
 - [issue board](https://github.com/Hiroki29/kaggle2021-Molecular-Translation/projects/1)  
 
 ## train.csv colomn infomaiton
-
+2834件
 |name|Explanation|
 |----|----|
 |id|一意のID|
@@ -73,6 +73,16 @@ Kaggle日記始動
 
 ### 20210604
 本格的に始める
+#### 参考になりそうなEDA
+* (https://www.kaggle.com/ruchi798/commonlit-readability-prize-eda-baseline)[CommonLit Readability Prize: EDA + Baseline]
+* (https://www.kaggle.com/andradaolteanu/i-commonlit-explore-xgbrf-repeatedfold-model)[I.CommonLit: Explore + XGBRF&RepeatedFold Model]
+![スクリーンショット 2021-06-04 10 43 55](https://user-images.githubusercontent.com/56621409/120733255-c551d800-c521-11eb-9cb1-21fd40a22570.png)
+![スクリーンショット 2021-06-04 10 44 32](https://user-images.githubusercontent.com/56621409/120733301-dbf82f00-c521-11eb-8c2a-f720993c2c12.png)
+![スクリーンショット 2021-06-04 10 45 16](https://user-images.githubusercontent.com/56621409/120733355-f5997680-c521-11eb-80bf-e9790eabd752.png)
+
 #### 所感
 * 非常にシンプルなタスクなため差が付きにくそう
+* まずは一つのモデルをしっかりとさせることに注力する！！！
+* アンサンブルは二の次である
 * 様々なBertのアンサンブルが良さそう
+
