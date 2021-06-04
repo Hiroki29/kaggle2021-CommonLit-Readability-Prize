@@ -48,17 +48,31 @@ kaggle2021-Molecular-Translation
 - [issue board](https://github.com/Hiroki29/kaggle2021-Molecular-Translation/projects/1)  
 
 ## train.csv colomn infomaiton
-notebook: nb001
-example: https://www.xeno-canto.org/134874
 
 |name|Explanation|
 |----|----|
+|id|一意のID|
+|url_legal|URLのソース|
+|license|素材のライセンス|
+|excerpt|読みやすさを予測するテキスト|
+|target|読みやすさ|
+|standard_error|各抜粋の複数の評価者間のスコアの広がりの尺度|
 
+## test.csv colomn infomaiton
+|name|Explanation|
+|----|----|
+|id|一意のID|
+|url_legal|URLのソース|
+|license|素材のライセンス|
+|excerpt|読みやすさを予測するテキスト|
 
 
 ## Log
 ### 20210512
 Kaggle日記始動
 
-### 202105xx
-Dockerで環境構築
+### 20210604
+本格的に始める
+#### 所感
+* 非常にシンプルなタスクなため差が付きにくそう
+* 様々なBertのアンサンブルが良さそう
