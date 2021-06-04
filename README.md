@@ -53,10 +53,7 @@ example: https://www.xeno-canto.org/134874
 
 |name|Explanation|
 |----|----|
-|image_id|画像のID|
-|InChI|国際化学物質識別番号()|
 
-![スクリーンショット 2021-05-12 8 49 27](https://user-images.githubusercontent.com/56621409/117898028-f6fac900-b2fe-11eb-8141-42a68c20709e.png)
 
 
 ## Log
