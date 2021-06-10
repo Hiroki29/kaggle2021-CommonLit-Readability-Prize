@@ -96,3 +96,7 @@ Kaggle日記始動
 	* (https://www.kaggle.com/rhtsingh/speeding-up-transformer-w-optimization-strategies)[Speeding up Transformer w/ Optimization Strategies]
 	* (https://www.kaggle.com/rhtsingh/commonlit-readability-prize-roberta-torch-itpt)[CommonLit Readability Prize - RoBERTa Torch|ITPT]
 	* (https://www.kaggle.com/mdfahimreshm/bert-in-depth-understanding)[BERT - In Depth Understanding]
+![スクリーンショット 2021-06-11 6 06 48](https://user-images.githubusercontent.com/56621409/121597071-3726a600-ca7b-11eb-95f4-76c63e0ee147.png)
+* なぜマルチヘッドアテンションを使うのか？
+	* Self-Attentionでは, ある単語が単独で, 他の単語との注意スコアよりもはるかに多くの注意を引くことが観察される
+	* これは, モデルが文脈を理解するのを妨げる可能性がある. そこで, self-Attentionのスコアを複数回測定することで, この問題を少しでも減らすことができる
