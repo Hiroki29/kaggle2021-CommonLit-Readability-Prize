@@ -74,8 +74,8 @@ Kaggle日記始動
 ### 20210604
 本格的に始める
 #### 参考になりそうなEDA
-* (https://www.kaggle.com/ruchi798/commonlit-readability-prize-eda-baseline)[CommonLit Readability Prize: EDA + Baseline]
-* (https://www.kaggle.com/andradaolteanu/i-commonlit-explore-xgbrf-repeatedfold-model)[I.CommonLit: Explore + XGBRF&RepeatedFold Model]
+* [CommonLit Readability Prize: EDA + Baseline](https://www.kaggle.com/ruchi798/commonlit-readability-prize-eda-baseline)
+* [I.CommonLit: Explore + XGBRF&RepeatedFold Model](https://www.kaggle.com/andradaolteanu/i-commonlit-explore-xgbrf-repeatedfold-model)
 ![スクリーンショット 2021-06-04 10 43 55](https://user-images.githubusercontent.com/56621409/120733255-c551d800-c521-11eb-9cb1-21fd40a22570.png)
 ![スクリーンショット 2021-06-04 10 44 32](https://user-images.githubusercontent.com/56621409/120733301-dbf82f00-c521-11eb-8c2a-f720993c2c12.png)
 ![スクリーンショット 2021-06-04 10 45 16](https://user-images.githubusercontent.com/56621409/120733355-f5997680-c521-11eb-80bf-e9790eabd752.png)
@@ -93,9 +93,9 @@ Kaggle日記始動
 	* MLM,NSPに加えて同じドメインでの事前学習行う![スクリーンショット 2021-06-11 5 42 24](https://user-images.githubusercontent.com/56621409/121594277-cfbb2700-ca77-11eb-88e8-11949ceed9ca.png)
 
 * 新たな良さげnotebook
-	* (https://www.kaggle.com/rhtsingh/speeding-up-transformer-w-optimization-strategies)[Speeding up Transformer w/ Optimization Strategies]
-	* (https://www.kaggle.com/rhtsingh/commonlit-readability-prize-roberta-torch-itpt)[CommonLit Readability Prize - RoBERTa Torch|ITPT]
-	* (https://www.kaggle.com/mdfahimreshm/bert-in-depth-understanding)[BERT - In Depth Understanding]
+	* [Speeding up Transformer w/ Optimization Strategies](https://www.kaggle.com/rhtsingh/speeding-up-transformer-w-optimization-strategies)
+	* [CommonLit Readability Prize - RoBERTa Torch|ITPT](https://www.kaggle.com/rhtsingh/commonlit-readability-prize-roberta-torch-itpt)
+	* [BERT - In Depth Understanding](https://www.kaggle.com/mdfahimreshm/bert-in-depth-understanding)
 ![スクリーンショット 2021-06-11 6 06 48](https://user-images.githubusercontent.com/56621409/121597071-3726a600-ca7b-11eb-95f4-76c63e0ee147.png)
 * なぜマルチヘッドアテンションを使うのか？
 	* Self-Attentionでは, ある単語が単独で, 他の単語との注意スコアよりもはるかに多くの注意を引くことが観察される
