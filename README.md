@@ -86,3 +86,9 @@ Kaggle日記始動
 * アンサンブルは二の次である
 * 様々なBertのアンサンブルが良さそう
 
+### 20210611 
+* まずはアンサンブルより単一なモデルの精度向上を目指す
+* Robertaの仕組みがどうなっているのかを理解する
+* 新たな良さげnotebook
+* Robertaの仕組みがどうなっているのかを理解する
+* [Speeding up Transformer w/ Optimization Strategies]
