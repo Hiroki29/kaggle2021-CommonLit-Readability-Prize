@@ -89,6 +89,10 @@ Kaggle日記始動
 ### 20210611 
 * まずはアンサンブルより単一なモデルの精度向上を目指す
 * Robertaの仕組みがどうなっているのかを理解する
+* Bertの新たな知見
+	* MLM,NSPに加えて同じドメインでの事前学習行う![スクリーンショット 2021-06-11 5 42 24](https://user-images.githubusercontent.com/56621409/121594277-cfbb2700-ca77-11eb-88e8-11949ceed9ca.png)
+
 * 新たな良さげnotebook
-* Robertaの仕組みがどうなっているのかを理解する
-* [Speeding up Transformer w/ Optimization Strategies]
+	* (https://www.kaggle.com/rhtsingh/speeding-up-transformer-w-optimization-strategies)[Speeding up Transformer w/ Optimization Strategies]
+	* (https://www.kaggle.com/rhtsingh/commonlit-readability-prize-roberta-torch-itpt)[CommonLit Readability Prize - RoBERTa Torch|ITPT]
+	* (https://www.kaggle.com/mdfahimreshm/bert-in-depth-understanding)[BERT - In Depth Understanding]
