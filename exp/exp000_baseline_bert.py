@@ -1,4 +1,3 @@
-import gc
 import os
 import random
 import warnings
@@ -11,7 +10,7 @@ import transformers
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import StratifiedKFold
 from torch.cuda.amp import GradScaler, autocast
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 from tqdm.notebook import tqdm
 
 warnings.simplefilter('ignore')
@@ -39,6 +38,7 @@ def get_device() -> torch.device:
 # Config #
 # =================================================
 class Config:
+    seed = 42
     epochs = 10
     lr = 1e-5
     max_len = 185
@@ -48,12 +48,10 @@ class Config:
     bert_model = '../input/huggingface-bert/bert-large-uncased'
     model_name = 'bert-large-uncased'
     train_file = '../input/commonlitreadabilityprize/train.csv'
-    test_file = '../input/commonlitreadabilityprize/test.csv'
-    state_dir = '../output/exp001/'
+    state_dir = '../output/exp000/'
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-large-uncased', do_lower_case=True)
     scaler = GradScaler()
     train = True
-    inference = False
 
 
 # =================================================
@@ -106,6 +104,8 @@ class BERTDataset(Dataset):
 # =================================================
 # dataloading
 # =================================================
+set_seed(42)
+
 data = pd.read_csv(Config.train_file)
 data = data.sample(frac=1).reset_index(drop=True)
 data = data[['excerpt', 'target']]
@@ -166,7 +166,8 @@ class BERT_BASE_UNCASED(nn.Module):
         self.fc = nn.Linear(768, 1)
 
     def forward(self, ids, mask, token_type_ids):
-        _, output = self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids, return_dict=False)
+        _, output = self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids,
+                              return_dict=False)
         output = self.drop(output)
         output = self.fc(output)
         return output
@@ -180,7 +181,8 @@ class BERT_LARGE_UNCASED(nn.Module):
         self.fc = nn.Linear(1024, 1)
 
     def forward(self, ids, mask, token_type_ids):
-        _, output = self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids, return_dict=False)
+        _, output = self.bert(ids, attention_mask=mask, token_type_ids=token_type_ids,
+                              return_dict=False)
         output = self.drop(output)
         output = self.fc(output)
         return output
@@ -307,51 +309,12 @@ def yield_optimizer(model):
 
 
 # =================================================
-# Inference
-# =================================================
-@torch.no_grad()
-def inference(model, states_list, test_dataloader, device=torch.device('cuda:0')):
-    """
-    Do inference for different model folds
-    """
-    model.eval()
-    all_preds = []
-    for state in states_list:
-        print(f"State: {state}")
-        state_dict = torch.load(state)
-        model.load_state_dict(state_dict)
-        model = model.to(device)
-
-        # Clean
-        del state_dict
-        gc.collect()
-        torch.cuda.empty_cache()
-
-        preds = []
-        prog = tqdm(test_dataloader, total=len(test_dataloader))
-        for data in prog:
-            ids = data['ids'].to(DEVICE, dtype=torch.long)
-            mask = data['mask'].to(DEVICE, dtype=torch.long)
-            ttis = data['token_type_ids'].to(DEVICE, dtype=torch.long)
-
-            outputs = model(ids=ids, mask=mask, token_type_ids=ttis)
-            preds.append(outputs.squeeze(-1).cpu().detach().numpy())
-
-        all_preds.append(np.concatenate(preds))
-
-        # Clean
-        gc.collect()
-        torch.cuda.empty_cache()
-
-    return all_preds
-
-
-# =================================================
 # explain
 # =================================================
 
 if __name__ == '__main__':
     DEVICE = get_device()
+    set_seed(Config.seed)
 
     if Config.train:
         model = BERT_LARGE_UNCASED().to(DEVICE)
@@ -382,12 +345,3 @@ if __name__ == '__main__':
 
         print(f"Best RMSE in fold: {fold} was: {best_loss:.4f}")
         print(f"Final RMSE in fold: {fold} was: {current_loss:.4f}")
-
-    if Config.inference:
-        state_list = [os.path.join(Config.state_dir, x) for x in os.listdir(Config.state_dir) if x.endswith(".pt")]
-        model = BERT_BASE_UNCASED()
-
-        print("Doing Predictions for all folds")
-        predictions = inference(model, state_list, test_data, device=DEVICE)
-
-        final_predictions = pd.DataFrame(predictions).T.mean(axis=1).tolist()
