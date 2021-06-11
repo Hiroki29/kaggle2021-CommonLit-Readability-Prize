@@ -1,19 +1,19 @@
 import os
+import platform
 import random
 import warnings
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import transformers
 from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import StratifiedKFold
 from torch.cuda.amp import GradScaler, autocast
 from torch.utils.data import DataLoader, Dataset
-from tqdm.notebook import tqdm
-
-warnings.simplefilter('ignore')
+# from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 
 # =================================================
@@ -40,7 +40,7 @@ def init_logger(log_file='train.log'):  # コンソールとログファイル�
     logger.setLevel(INFO)  # ログレベルを設定
     handler1 = StreamHandler()  # ログをコンソール出力するための設定
     handler1.setFormatter(Formatter("%(message)s"))  # ログメッセージ
-    handler2 = FileHandler(filename=log_file)  ## ログのファイル出力先を設定（4）
+    handler2 = FileHandler(filename=log_file)  # ログのファイル出力先を設定（4）
     handler2.setFormatter(Formatter("%(message)s"))  # ログメッセージ
     logger.addHandler(handler1)
     logger.addHandler(handler2)
@@ -60,7 +60,7 @@ class Config:
     valid_bs = 32
     bert_model = '../input/huggingface-bert/bert-large-uncased'
     model_name = 'bert-large-uncased'
-    train_file = '../input/commonlitreadabilityprize/train.csv'
+    train_file = '../input/commonlitreadabilityprize/train_folds.csv'
     out_dir = '../out/exp000'
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-large-uncased', do_lower_case=True)
     scaler = GradScaler()
@@ -117,22 +117,12 @@ class BERTDataset(Dataset):
 # =================================================
 # dataloading
 # =================================================
-set_seed(42)
-
 data = pd.read_csv(Config.train_file)
-data = data.sample(frac=1).reset_index(drop=True)
-data = data[['excerpt', 'target']]
+# data = data.sample(frac=1).reset_index(drop=True)
+data = data[['excerpt', 'target', 'kfold']]
 
-# Do Kfolds training and cross validation
-kf = StratifiedKFold(n_splits=Config.n_splits)
-nb_bins = int(np.floor(1 + np.log2(len(data))))
-data.loc[:, 'bins'] = pd.cut(data['target'], bins=nb_bins, labels=False)
-
-for fold, (train_idx, valid_idx) in enumerate(kf.split(X=data, y=data['bins'].values)):
-    if fold != 0:
-        continue
-    train_data = data.loc[train_idx]
-    valid_data = data.loc[valid_idx]
+train_data = data[data.kfold != 0].reset_index(drop=True)
+valid_data = data[data.kfold == 0].reset_index(drop=True)
 
 train_set = BERTDataset(
     review=train_data['excerpt'].values,
@@ -156,14 +146,6 @@ valid = DataLoader(
     batch_size=Config.valid_bs,
     shuffle=False,
     num_workers=8
-)
-
-test_file = pd.read_csv(Config.test_file)
-test_data = BERTDataset(test_file['excerpt'].values, is_test=True)
-test_data = DataLoader(
-    test_data,
-    batch_size=Config.train_bs,
-    shuffle=False
 )
 
 
@@ -326,18 +308,26 @@ def yield_optimizer(model):
 # =================================================
 
 if __name__ == '__main__':
-    DEVICE = get_device()
+    warnings.simplefilter('ignore')
     set_seed(Config.seed)
     # logging
     filename = __file__.split("/")[-1].replace(".py", "")
-    logdir = Path(f"out/{filename}")
+    logdir = Path(f"../out/{filename}")
     logdir.mkdir(exist_ok=True, parents=True)
+    checkdir = Path(f"../out/{filename}/checkpoint")
+    checkdir.mkdir(exist_ok=True, parents=True)
+    fold = 0
 
     if Config.train:
         logger = init_logger(log_file=logdir / "train.log")
-        logger.info("=" * 20)
-        logger.info(f"Fold {i} Training")
-        logger.info("=" * 20)
+        if torch.cuda.is_available():
+            logger.info("[INFO] Using GPU: {}\n".format(torch.cuda.get_device_name()))
+        else:
+            logger.info("\n[INFO] GPU not found. Using CPU: {}\n".format(platform.processor()))
+        DEVICE = get_device()
+        logger.info("-" * 20)
+        logger.info(f"Fold {fold} Training")
+        logger.info("-" * 20)
         model = BERT_LARGE_UNCASED().to(DEVICE)
         nb_train_steps = int(len(train_data) / Config.train_bs * Config.epochs)
         optimizer = yield_optimizer(model)
@@ -352,17 +342,18 @@ if __name__ == '__main__':
         best_loss = 100
         for epoch in range(1, Config.epochs + 1):
             logger.info(f"\n{'--' * 5} EPOCH: {epoch} {'--' * 5}\n")
-
-        # Train for 1 epoch
-        trainer.train_one_epoch()
-
-        # Validate for 1 epoch
-        current_loss = trainer.valid_one_epoch()
-
-        if current_loss < best_loss:
-            logger.info(f"Saving best model in this fold: {current_loss:.4f}")
-        torch.save(trainer.get_model().state_dict(), f"{Config.model_name}_fold_{fold}.pt")
-        best_loss = current_loss
+            # Train for 1 epoch
+            trainer.train_one_epoch()
+            # Validate for 1 epoch
+            current_loss = trainer.valid_one_epoch()
+            if current_loss < best_loss:
+                logger.info(f"Saving best model in this fold: {current_loss:.4f}")
+                torch.save(trainer.get_model().state_dict(), f"{checkdir}/{Config.model_name}_fold_{fold}.pt")
+                best_loss = current_loss
 
         logger.info(f"Best RMSE in fold: {fold} was: {best_loss:.4f}")
         logger.info(f"Final RMSE in fold: {fold} was: {current_loss:.4f}")
+
+        del train_set, valid_set, train, valid, model, optimizer, scheduler, trainer, current_loss
+        gc.collect()
+        torch.cuda.empty_cache()
