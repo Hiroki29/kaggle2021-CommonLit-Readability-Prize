@@ -101,3 +101,7 @@ Kaggle日記始動
 	* Self-Attentionでは, ある単語が単独で, 他の単語との注意スコアよりもはるかに多くの注意を引くことが観察される
 	* これは, モデルが文脈を理解するのを妨げる可能性がある. そこで, self-Attentionのスコアを複数回測定することで, この問題を少しでも減らすことができる
 * まずはしっかりスクラッチで自分のコードを書く,その際コピペはせずちゃんと書く
+* 1実験1スクリプトで行う！参考（荒井さん）
+	* https://speakerdeck.com/koukyo1994/konpezhong-falsekodo-dousiteru?slide=7
+	![スクリーンショット 2021-06-11 11 26 57](https://user-images.githubusercontent.com/56621409/121621852-f1cc9d80-caa7-11eb-89ff-1415cc37f173.png)
+
