@@ -1,7 +1,7 @@
 import os
 import random
 import warnings
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -34,6 +34,19 @@ def get_device() -> torch.device:
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
+def init_logger(log_file='train.log'):  # コンソールとログファイルの両方に出力
+    from logging import getLogger, INFO, FileHandler, Formatter, StreamHandler
+    logger = getLogger(__name__)
+    logger.setLevel(INFO)  # ログレベルを設定
+    handler1 = StreamHandler()  # ログをコンソール出力するための設定
+    handler1.setFormatter(Formatter("%(message)s"))  # ログメッセージ
+    handler2 = FileHandler(filename=log_file)  ## ログのファイル出力先を設定（4）
+    handler2.setFormatter(Formatter("%(message)s"))  # ログメッセージ
+    logger.addHandler(handler1)
+    logger.addHandler(handler2)
+    return logger
+
+
 # =================================================
 # Config #
 # =================================================
@@ -41,14 +54,14 @@ class Config:
     seed = 42
     epochs = 10
     lr = 1e-5
-    max_len = 185
+    max_len = 314
     n_splits = 5
     train_bs = 16
     valid_bs = 32
     bert_model = '../input/huggingface-bert/bert-large-uncased'
     model_name = 'bert-large-uncased'
     train_file = '../input/commonlitreadabilityprize/train.csv'
-    state_dir = '../output/exp000/'
+    out_dir = '../out/exp000'
     tokenizer = transformers.BertTokenizer.from_pretrained('bert-large-uncased', do_lower_case=True)
     scaler = GradScaler()
     train = True
@@ -315,8 +328,16 @@ def yield_optimizer(model):
 if __name__ == '__main__':
     DEVICE = get_device()
     set_seed(Config.seed)
+    # logging
+    filename = __file__.split("/")[-1].replace(".py", "")
+    logdir = Path(f"out/{filename}")
+    logdir.mkdir(exist_ok=True, parents=True)
 
     if Config.train:
+        logger = init_logger(log_file=logdir / "train.log")
+        logger.info("=" * 20)
+        logger.info(f"Fold {i} Training")
+        logger.info("=" * 20)
         model = BERT_LARGE_UNCASED().to(DEVICE)
         nb_train_steps = int(len(train_data) / Config.train_bs * Config.epochs)
         optimizer = yield_optimizer(model)
@@ -330,18 +351,18 @@ if __name__ == '__main__':
 
         best_loss = 100
         for epoch in range(1, Config.epochs + 1):
-            print(f"\n{'--' * 5} EPOCH: {epoch} {'--' * 5}\n")
+            logger.info(f"\n{'--' * 5} EPOCH: {epoch} {'--' * 5}\n")
 
-            # Train for 1 epoch
-            trainer.train_one_epoch()
+        # Train for 1 epoch
+        trainer.train_one_epoch()
 
-            # Validate for 1 epoch
-            current_loss = trainer.valid_one_epoch()
+        # Validate for 1 epoch
+        current_loss = trainer.valid_one_epoch()
 
-            if current_loss < best_loss:
-                print(f"Saving best model in this fold: {current_loss:.4f}")
-                torch.save(trainer.get_model().state_dict(), f"{Config.model_name}_fold_{fold}.pt")
-                best_loss = current_loss
+        if current_loss < best_loss:
+            logger.info(f"Saving best model in this fold: {current_loss:.4f}")
+        torch.save(trainer.get_model().state_dict(), f"{Config.model_name}_fold_{fold}.pt")
+        best_loss = current_loss
 
-        print(f"Best RMSE in fold: {fold} was: {best_loss:.4f}")
-        print(f"Final RMSE in fold: {fold} was: {current_loss:.4f}")
+        logger.info(f"Best RMSE in fold: {fold} was: {best_loss:.4f}")
+        logger.info(f"Final RMSE in fold: {fold} was: {current_loss:.4f}")

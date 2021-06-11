@@ -1,0 +1,6 @@
+input/
+*.pth
+*.log
+*.pyc
+*.txt
+*.csv
