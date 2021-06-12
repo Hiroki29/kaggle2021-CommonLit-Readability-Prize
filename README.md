@@ -112,3 +112,18 @@ Kaggle日記始動
 #### 気づき
 * 作成したモデルはubuntuPCからkaggleに保存したほうが良い
 * 提出するときはinternet接続できないからinputに入れておかないといけない
+#### これからすること
+* 学習率についての理解を深める
+* epoch数はこのままでいいのか
+* max_lengthについて
+* アンサンブルの仕方（単に結果の平均を取るのか？）
+* 最後に単なるlinearでよいのか
+* 過去に優勝したNLPコンペをまとめる必要ありそう
+* ![スクリーンショット 2021-06-12 10 49 43](https://user-images.githubusercontent.com/56621409/121761627-e93d9b00-cb6b-11eb-91e6-928a483601d0.png)
+	* I calculated the validation score for every 40 steps (batch size: 8) and saved the model with the best validation score.(40ステップ（バッチサイズ：8）ごとに検証スコアを計算し、最高の検証スコアでモデルを保存しました。)
+	* per 20 steps. 20ステップなどで評価するようにする![スクリーンショット 2021-06-12 10 51 57](https://user-images.githubusercontent.com/56621409/121761689-3883cb80-cb6c-11eb-8465-23f4b30d523f.png)
+* I'm using a batch size 8![スクリーンショット 2021-06-12 10 53 16](https://user-images.githubusercontent.com/56621409/121761726-68cb6a00-cb6c-11eb-8cec-8e3f7b24e348.png)
+
+#### 学習率について
+* 現状 
+
