@@ -95,20 +95,20 @@ class BERTDataset(Dataset):
         )
         ids = torch.tensor(inputs['input_ids'], dtype=torch.long)
         mask = torch.tensor(inputs['attention_mask'], dtype=torch.long)
-        token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.long)
+        # token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.long)
 
         if self.is_test:
             return {
                 'ids': ids,
                 'mask': mask,
-                'token_type_ids': token_type_ids,
+                # 'token_type_ids': token_type_ids,
             }
         else:
             targets = torch.tensor(self.target[idx], dtype=torch.float)
             return {
                 'ids': ids,
                 'mask': mask,
-                'token_type_ids': token_type_ids,
+                # 'token_type_ids': token_type_ids,
                 'targets': targets
             }
 
@@ -158,9 +158,9 @@ class ROBERTA_LARGE(nn.Module):
         self.drop = nn.Dropout(0.3)
         self.fc = nn.Linear(1024, 1)
 
-    def forward(self, ids, mask, token_type_ids):
-        _, output = self.roberta(ids, attention_mask=mask, token_type_ids=token_type_ids,
-                              return_dict=False)
+    def forward(self, ids, mask):
+        _, output = self.roberta(ids, attention_mask=mask,
+                                 return_dict=False)
         output = self.drop(output)
         output = self.fc(output)
         return output
@@ -203,10 +203,10 @@ class Trainer:
             for idx, inputs in prog_bar:
                 ids = inputs['ids'].to(self.device, dtype=torch.long)
                 mask = inputs['mask'].to(self.device, dtype=torch.long)
-                ttis = inputs['token_type_ids'].to(self.device, dtype=torch.long)
+                # ttis = inputs['token_type_ids'].to(self.device, dtype=torch.long)
                 targets = inputs['targets'].to(self.device, dtype=torch.float)
 
-                outputs = self.model(ids=ids, mask=mask, token_type_ids=ttis).view(-1)
+                outputs = self.model(ids=ids, mask=mask).view(-1)
 
                 loss = self.loss_fn(outputs, targets)
                 prog_bar.set_description('loss: {:.2f}'.format(loss.item()))
@@ -230,10 +230,10 @@ class Trainer:
             for idx, inputs in prog_bar:
                 ids = inputs['ids'].to(self.device, dtype=torch.long)
                 mask = inputs['mask'].to(self.device, dtype=torch.long)
-                ttis = inputs['token_type_ids'].to(self.device, dtype=torch.long)
+                # ttis = inputs['token_type_ids'].to(self.device, dtype=torch.long)
                 targets = inputs['targets'].to(self.device, dtype=torch.float)
 
-                outputs = self.model(ids=ids, mask=mask, token_type_ids=ttis).view(-1)
+                outputs = self.model(ids=ids, mask=mask).view(-1)
                 all_targets.extend(targets.cpu().detach().numpy().tolist())
                 all_predictions.extend(outputs.cpu().detach().numpy().tolist())
 
@@ -315,6 +315,7 @@ if __name__ == '__main__':
             trainer.train_one_epoch()
             # Validate for 1 epoch
             current_loss = trainer.valid_one_epoch()
+            logger.info(f"current_loss in this fold: {current_loss:.4f}")
             if current_loss < best_loss:
                 logger.info(f"Saving best model in this fold: {current_loss:.4f}")
                 torch.save(trainer.get_model().state_dict(),
