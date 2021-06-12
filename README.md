@@ -126,4 +126,44 @@ Kaggle日記始動
 
 #### 学習率について
 * 現状 
+```
+AdamW (
+Parameter Group 0
+    betas: (0.9, 0.999)
+    correct_bias: True
+    eps: 1e-06
+    lr: 1e-05
+    weight_decay: 0.003
 
+Parameter Group 1
+    betas: (0.9, 0.999)
+    correct_bias: True
+    eps: 1e-06
+    lr: 1e-05
+    weight_decay: 0.0
+)
+```
+
+### 20210612
+#### 今日やること
+[My Experience So Far and Further Improvements](https://www.kaggle.com/c/commonlitreadabilityprize/discussion/241029)
+このノートブックが非常に有益である
+![スクリーンショット 2021-06-13 6 27 21](https://user-images.githubusercontent.com/56621409/121789383-6c183180-cc10-11eb-8596-5dcb59eabe1f.png)
+* Further Improvements - There are many ways to improve the score further and I will be implementing some and sharing them very soon.
+
+		1. Dynamic Padding / Sequence Bucketing
+		2. Stochastic Weight Averaging(確率的重み平均)
+		3. Utilizing Different Layers - There are many ways to do this concat, mean pooling, max pooling, attention, lstm, hierarchical or parallel aggregation.
+		4. Unsupervised Data Augmentation
+		5. MIXOUT - At each training iteration, each model parameter is replaced with its pre-trained value with probability p.  
+		https://arxiv.org/abs/1909.11299  論文
+		6. Pretraining + Multi-Task Training + Fine-tuning(複数のタスクを同時に微調整) - Multi-Task Learning : Finetuning on multiple tasks simultaneously. Using OneStop English and Weebit Corpus.
+		7. Pretraining + STILTs Training(複数のタスクを順番に微調整) - STILTs Training: Finetuning on multiple tasks sequentially. Using OneStop English and Weebit Corpus.
+		8. LLRD(最上層には高い学習率を適用し、最下層には低い学習率を適用) - Layer Wise Learning Rate Decay - Introduced in (Howard & Ruder, 2018). Applies higher learning rates for top layers and lower learning rates for bottom layers. The 4th notebook which does something similar where instead grouping of layers is done.
+		9. Training Encoder and Head Separately(エンコーダーとヘッドを別々にトレーニングする?)
+		10. Backtranslation Augmentation(逆翻訳を用いたデータの拡張)
+		11. Larger and More Models(他の大きなモデル) - RoBERTa Large, XLNet, T5, Electra, Albert these models are comparatively trained on larger datasets than other models and thus might perform better.
+		12. Ensembling Techniques(アンサンブル) - Like every other Kaggle competition this will be the key.
+
+* 前処理について  
+You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multilingual-toxic-comment-classification-3rd-place-solution
