@@ -109,3 +109,6 @@ Kaggle日記始動
 実際にinferenceして提出してみた  
 * roberta-base score : 0.517
 * roberta-large score : 0.594
+#### 気づき
+* 作成したモデルはubuntuPCからkaggleに保存したほうが良い
+* 提出するときはinternet接続できないからinputに入れておかないといけない
