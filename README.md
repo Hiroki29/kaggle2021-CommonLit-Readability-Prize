@@ -105,3 +105,7 @@ Kaggle日記始動
 	* https://speakerdeck.com/koukyo1994/konpezhong-falsekodo-dousiteru?slide=7
 	![スクリーンショット 2021-06-11 11 26 57](https://user-images.githubusercontent.com/56621409/121621852-f1cc9d80-caa7-11eb-89ff-1415cc37f173.png)
 
+### 20210612
+実際にinferenceして提出してみた  
+* roberta-base score : 0.517
+* roberta-large score : 0.594
