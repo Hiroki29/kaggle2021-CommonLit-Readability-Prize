@@ -158,7 +158,7 @@ class CommonLitModel(nn.Module):
             # regression task
             loss_fn = torch.nn.MSELoss()
             logits = logits.view(-1).to(labels.dtype)
-            loss = torch.sqrt(loss_fn(logits, labels.view(-1)))
+            loss = torch.sqrt(loss_fn(logits, labels.view(-1))) #logits:予測値, 正解ラベル
 
         output = (logits,) + outputs[2:]
         return ((loss,) + output) if loss is not None else output
@@ -420,7 +420,7 @@ class AverageMeter(object):
 
 class Trainer:
     def __init__(self, model, optimizer, scheduler, scalar=None, log_interval=1,
-                 evaluate_interval=1):
+                 evaluate_interval=10):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler

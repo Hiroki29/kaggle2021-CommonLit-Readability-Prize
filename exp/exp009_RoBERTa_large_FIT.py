@@ -420,7 +420,7 @@ class AverageMeter(object):
 
 class Trainer:
     def __init__(self, model, optimizer, scheduler, scalar=None, log_interval=1,
-                 evaluate_interval=1):
+                 evaluate_interval=10):
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
