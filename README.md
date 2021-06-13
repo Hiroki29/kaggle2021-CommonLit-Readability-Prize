@@ -105,3 +105,65 @@ Kaggle日記始動
 	* https://speakerdeck.com/koukyo1994/konpezhong-falsekodo-dousiteru?slide=7
 	![スクリーンショット 2021-06-11 11 26 57](https://user-images.githubusercontent.com/56621409/121621852-f1cc9d80-caa7-11eb-89ff-1415cc37f173.png)
 
+### 20210612
+実際にinferenceして提出してみた  
+* roberta-base score : 0.517
+* roberta-large score : 0.594
+#### 気づき
+* 作成したモデルはubuntuPCからkaggleに保存したほうが良い
+* 提出するときはinternet接続できないからinputに入れておかないといけない
+#### これからすること
+* 学習率についての理解を深める
+* epoch数はこのままでいいのか
+* max_lengthについて
+* アンサンブルの仕方（単に結果の平均を取るのか？）
+* 最後に単なるlinearでよいのか
+* 過去に優勝したNLPコンペをまとめる必要ありそう
+* ![スクリーンショット 2021-06-12 10 49 43](https://user-images.githubusercontent.com/56621409/121761627-e93d9b00-cb6b-11eb-91e6-928a483601d0.png)
+	* I calculated the validation score for every 40 steps (batch size: 8) and saved the model with the best validation score.(40ステップ（バッチサイズ：8）ごとに検証スコアを計算し、最高の検証スコアでモデルを保存しました。)
+	* per 20 steps. 20ステップなどで評価するようにする![スクリーンショット 2021-06-12 10 51 57](https://user-images.githubusercontent.com/56621409/121761689-3883cb80-cb6c-11eb-8465-23f4b30d523f.png)
+* I'm using a batch size 8![スクリーンショット 2021-06-12 10 53 16](https://user-images.githubusercontent.com/56621409/121761726-68cb6a00-cb6c-11eb-8cec-8e3f7b24e348.png)
+
+#### 学習率について
+* 現状 
+```
+AdamW (
+Parameter Group 0
+    betas: (0.9, 0.999)
+    correct_bias: True
+    eps: 1e-06
+    lr: 1e-05
+    weight_decay: 0.003
+
+Parameter Group 1
+    betas: (0.9, 0.999)
+    correct_bias: True
+    eps: 1e-06
+    lr: 1e-05
+    weight_decay: 0.0
+)
+```
+
+### 20210612
+#### 今日やること
+[My Experience So Far and Further Improvements](https://www.kaggle.com/c/commonlitreadabilityprize/discussion/241029)
+このノートブックが非常に有益である
+![スクリーンショット 2021-06-13 6 27 21](https://user-images.githubusercontent.com/56621409/121789383-6c183180-cc10-11eb-8596-5dcb59eabe1f.png)
+* Further Improvements - There are many ways to improve the score further and I will be implementing some and sharing them very soon.
+
+		1. Dynamic Padding / Sequence Bucketing
+		2. Stochastic Weight Averaging(確率的重み平均)
+		3. Utilizing Different Layers - There are many ways to do this concat, mean pooling, max pooling, attention, lstm, hierarchical or parallel aggregation.
+		4. Unsupervised Data Augmentation
+		5. MIXOUT - At each training iteration, each model parameter is replaced with its pre-trained value with probability p.  
+		https://arxiv.org/abs/1909.11299  論文
+		6. Pretraining + Multi-Task Training + Fine-tuning(複数のタスクを同時に微調整) - Multi-Task Learning : Finetuning on multiple tasks simultaneously. Using OneStop English and Weebit Corpus.
+		7. Pretraining + STILTs Training(複数のタスクを順番に微調整) - STILTs Training: Finetuning on multiple tasks sequentially. Using OneStop English and Weebit Corpus.
+		8. LLRD(最上層には高い学習率を適用し、最下層には低い学習率を適用) - Layer Wise Learning Rate Decay - Introduced in (Howard & Ruder, 2018). Applies higher learning rates for top layers and lower learning rates for bottom layers. The 4th notebook which does something similar where instead grouping of layers is done.
+		9. Training Encoder and Head Separately(エンコーダーとヘッドを別々にトレーニングする?)
+		10. Backtranslation Augmentation(逆翻訳を用いたデータの拡張)
+		11. Larger and More Models(他の大きなモデル) - RoBERTa Large, XLNet, T5, Electra, Albert these models are comparatively trained on larger datasets than other models and thus might perform better.
+		12. Ensembling Techniques(アンサンブル) - Like every other Kaggle competition this will be the key.
+
+* 前処理について  
+You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multilingual-toxic-comment-classification-3rd-place-solution
