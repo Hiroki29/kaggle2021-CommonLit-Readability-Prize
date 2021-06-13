@@ -167,3 +167,16 @@ Parameter Group 1
 
 * 前処理について  
 You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multilingual-toxic-comment-classification-3rd-place-solution
+
+### 20210613
+#### 行ったこと
+* discussionを眺めた
+	* 前処理とfineturningの2段処理をするべき
+	* 単一モデルについて　20step 
+* 実際に提出した
+	*https://www.kaggle.com/rhtsingh/commonlit-readability-prize-roberta-torch-infer-3 これをもとにした	 
+### 20210614
+#### 今日やること
+* 新しいcode
+	* [On Stability of Few-Sample Transformer Fine-Tuning](https://www.kaggle.com/rhtsingh/on-stability-of-few-sample-transformer-fine-tuning)
+	* [CommonLit Readability2 - 日本語](https://www.kaggle.com/tensorchoko/commonlit-readability2) roberta+svm で PB0.465
