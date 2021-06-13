@@ -318,7 +318,7 @@ def get_optimizer_params(model):
 
 
 def make_model(model_name, num_labels=1):
-    tokenizer = AutoTokenizer.from_pretrained('roberta-base')
+    tokenizer = AutoTokenizer.from_pretrained('roberta-large')
     config = AutoConfig.from_pretrained(model_name)
     config.update({'num_labels': num_labels})
     model = CommonLitModel(model_name, config=config)
@@ -582,7 +582,7 @@ def config(fold=0):
     batch_size = 8
 
     model, tokenizer = make_model(
-        model_name='../out/exp006_RoBERTa_base_ITPT/roberta-base-5-epochs/', num_labels=1)
+        model_name='../out/exp008_RoBERTa_large_ITPT/roberta-large-5-epochs/', num_labels=1)
     train = pd.read_csv('../input/commonlitreadabilityprize/train_folds.csv')
 
     train_loader, valid_loader = make_loader(
