@@ -4,7 +4,7 @@ import math
 import os
 import random
 import time
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -392,9 +392,9 @@ class Trainer:
                     'train_loss: {: >4.5f}'.format(losses.avg),
                 ]
                 print(', '.join(ret))
-            filename = __file__.split("/")[-1].replace(".py", "")
 
-            Config.check_dir.mkdir(exist_ok=True, parents=True)
+            checkdir = Path(Config.check_dir)
+            checkdir.mkdir(exist_ok=True, parents=True)
 
             if batch_idx % self.evaluate_interval == 0:
                 result_dict = self.evaluator.evaluate(
