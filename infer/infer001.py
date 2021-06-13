@@ -1,5 +1,4 @@
 import gc
-import math
 import os
 import random
 import time
@@ -245,7 +244,7 @@ def config(fold, model_name, load_model_path):
 
     test = pd.read_csv(Config.train_file)
     model, tokenizer = make_model(
-        model_name=Config.model_name, num_labels=1)
+        model_name=model_name, num_labels=1)
 
     model.load_state_dict(
         torch.load(f'{load_model_path}/model{fold}.bin')
@@ -264,7 +263,6 @@ def config(fold, model_name, load_model_path):
         raise ValueError('CPU training is not supported')
 
     scaler = Config.scaler
-
 
     return (
         model, tokenizer, valid_loader, scaler
@@ -297,12 +295,19 @@ if __name__ == '__main__':
     set_seed(Config.seed)
     result_list = []
     for fold in range(5):
+        pred_df1 = pd.DataFrame()
         print('----')
         print(f'FOLD: {fold}')
-        preds = run(fold, 'roberta-large','../out/exp010_RoBERTa_large_FITv2/checkpoint/')
-        print(preds)
+        pred_df1['target'] = run(fold, 'roberta-large',
+                                 '../out/exp010_RoBERTa_large_FITv2/checkpoint/')
+        test = pd.read_csv(Config.train_file)
+        valid_set = test[test['kfold'] == fold]
+        rmse = np.sqrt(np.mean((test['target'] - pred_df1['target']) ** 2))
+        print(rmse)
+        result_list.append(rmse)
         # result_list.append(result_dict)
         print('----')
-
+    print(result_list)
+    print(np.mean(result_list))
     # logger = init_logger(log_file=Config.out_dir + "/train.log")
     # logger.info(result_list)
