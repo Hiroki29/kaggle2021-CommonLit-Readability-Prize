@@ -577,7 +577,7 @@ class Evaluator:
 
 
 def config(fold=0):
-    epochs = 10
+    epochs = 7
     max_len = 320
     batch_size = 8
 

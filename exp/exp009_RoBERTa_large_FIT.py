@@ -328,7 +328,7 @@ def make_model(model_name, num_labels=1):
 def make_optimizer(model, optimizer_name="AdamW"):
     optimizer_grouped_parameters = get_optimizer_params(model)
     kwargs = {
-        'lr': 5e-5,  # 1e-3
+        'lr': 2e-5,  # 1e-3
         'weight_decay': 0.01,
         'betas': (0.9, 0.98),  # defaults to (0.9, 0.999))
         'eps': 1e-06  # defaults 1e-6
@@ -577,20 +577,22 @@ class Evaluator:
 
 
 def config(fold=0):
-    epochs = 10
-    max_len = 320
+    epochs = 5
+    max_len = 300
     batch_size = 8
+    warmup_proportion = 1
 
     model, tokenizer = make_model(
-        model_name='../out/exp008_RoBERTa_large_ITPT/roberta-large-5-epochs/', num_labels=1)
+        model_name='../out/exp008_RoBERTa_large_ITPT/roberta-large-10-epochs/', num_labels=1)
     train = pd.read_csv('../input/commonlitreadabilityprize/train_folds.csv')
 
     train_loader, valid_loader = make_loader(
         train, tokenizer, max_len=max_len, batch_size=batch_size, fold=fold
     )
     num_update_steps_per_epoch = len(train_loader)
+    print(num_update_steps_per_epoch)
     max_train_steps = epochs * num_update_steps_per_epoch
-    warmup_proportion = 0
+
     if warmup_proportion != 0:
         warmup_steps = math.ceil((max_train_steps * 2) / 100)
     else:
@@ -598,7 +600,9 @@ def config(fold=0):
 
     optimizer = make_optimizer(model, "AdamW")
     scheduler = make_scheduler(
-        optimizer, decay_name='cosine_warmup',
+        optimizer,
+        # decay_name='cosine_warmup',
+        decay_name='linear',
         t_max=max_train_steps,
         warmup_steps=warmup_steps
     )
