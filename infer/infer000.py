@@ -279,7 +279,7 @@ if __name__ == '__main__':
     pred_df3 = pd.DataFrame()
     for fold in tqdm(range(5)):
         pred_df1[f'fold{fold}'] = run(fold, 'roberta-large',
-                                      '../out/exp010_RoBERTa_large/commonlit-roberta-base-i/')
+                                      '../out/exp010_RoBERTa_large_FITv2/checkpoint/')
         # pred_df2[f'fold{fold + 5}'] = run(fold, '../input/robertalarge/',
         #                                   '../input/roberta-large-itptfit/')
         # pred_df3[f'fold{fold + 10}'] = run(fold, '../input/robertalarge/',
