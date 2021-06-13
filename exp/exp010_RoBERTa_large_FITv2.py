@@ -574,3 +574,4 @@ if __name__ == '__main__':
         result_list.append(result_dict)
         print('----')
     logger = init_logger(log_file=Config.out_dir + "/train.log")
+    logger.info(result_list)
