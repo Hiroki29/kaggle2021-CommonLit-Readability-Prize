@@ -176,7 +176,15 @@ You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multi
 * 実際に提出した
 	*https://www.kaggle.com/rhtsingh/commonlit-readability-prize-roberta-torch-infer-3 これをもとにした	 
 ### 20210614
-#### 今日やること
+#### やることリスト
+* SVMの勉強
+* trainでinferenceをできるようにする infer/など？
+* アンサンブルの仕方検証
+#### 発見
 * 新しいcode
 	* [On Stability of Few-Sample Transformer Fine-Tuning](https://www.kaggle.com/rhtsingh/on-stability-of-few-sample-transformer-fine-tuning)
 	* [CommonLit Readability2 - 日本語](https://www.kaggle.com/tensorchoko/commonlit-readability2) roberta+svm で PB0.465
+* traindataに対してのスコアを出せるようにする infer ディレクトリの作成
+* bert出力後にattentionheadをつけてみるとどうなるのか
+* attention head の埋め込み後にsvmを使用してPB0.474
+	* https://www.kaggle.com/maunish/clrp-roberta-svm
