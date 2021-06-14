@@ -30,12 +30,12 @@ class TrainConfig:
     per_device_eval_batch_size = 8
     learning_rate = 5e-5
     weight_decay = 0.0
-    num_train_epochs = 2  # change to 5
+    num_train_epochs = 10  # change to 5
     max_train_steps = None
     gradient_accumulation_steps = 1
     lr_scheduler_type = 'constant_with_warmup'
     num_warmup_steps = 0
-    output_dir = '../out/exp0014_RoBERTa_base_ITPTv2/roberta-base-' + str(num_train_epochs) + '-epochs/'
+    output_dir = '../out/exp014_RoBERTa_base_ITPTv2/roberta-base-' + str(num_train_epochs) + '-epochs/'
     seed = 42
     model_type = 'roberta'
     max_seq_length = 320

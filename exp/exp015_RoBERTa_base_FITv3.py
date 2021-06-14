@@ -52,10 +52,10 @@ def init_logger(log_file='train.log'):  # コンソールとログファイル�
 # =================================================
 class Config:
     seed = 42
-    epochs = 10
+    epochs = 1
     max_len = 300
     batch_size = 8
-    model_name = '../out/exp014_RoBERTa_base_ITPT/roberta-base-5-epochs/'
+    model_name = '../out/exp014_RoBERTa_base_ITPTv2/roberta-base-2-epochs/'
     train_file = '../input/commonlitreadabilityprize/train_folds.csv'
     warmup_proportion = 1
     optimizer = 'AdamW'
@@ -64,7 +64,7 @@ class Config:
     learning_rate = 2e-5
     tokenizer = 'roberta-base'
     filename = __file__.replace(".py", "")
-    out_dir = '../out/' + filename
+    out_dir = '../out/' + filename + '/roberta-base-2-epochs' + str(epochs)
     check_dir = out_dir + '/checkpoint'
     log_interval = 10
     evaluate_interval = 40
@@ -340,6 +340,8 @@ class Trainer:
 
     def train(self, train_loader, valid_loader, epoch,
               result_dict, tokenizer, fold):
+        out_dir = Path(Config.out_dir)
+        out_dir.mkdir(exist_ok=True, parents=True)
         logger = init_logger(log_file=Config.out_dir + "/train.log")
         count = 0
         losses = AverageMeter()
