@@ -5,6 +5,7 @@ import os
 import random
 import time
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import torch
@@ -339,10 +340,7 @@ class Trainer:
         self.evaluator = Evaluator(self.model, self.scalar)
 
     def train(self, train_loader, valid_loader, epoch,
-              result_dict, tokenizer, fold):
-        out_dir = Path(Config.out_dir)
-        out_dir.mkdir(exist_ok=True, parents=True)
-        logger = init_logger(log_file=Config.out_dir + "/train.log")
+              result_dict, tokenizer, fold, logger):
         count = 0
         losses = AverageMeter()
         self.model.train()
@@ -405,7 +403,7 @@ class Trainer:
                 )
                 if result_dict['val_loss'][-1] < result_dict['best_val_loss']:
                     logger.info("{} epoch, best epoch was updated! valid_loss: {: >4.5f}"
-                          .format(epoch, result_dict['val_loss'][-1]))
+                                .format(epoch, result_dict['val_loss'][-1]))
                     result_dict["best_val_loss"] = result_dict['val_loss'][-1]
                     torch.save(self.model.state_dict(), f"{Config.check_dir}/model{fold}.bin")
 
@@ -541,7 +539,7 @@ def config(fold=0):
     )
 
 
-def run(fold=0):
+def run(fold, logger):
     model, tokenizer, optimizer, scheduler, scaler, \
     train_loader, valid_loader, result_dict, epochs = config(fold)
 
@@ -555,7 +553,7 @@ def run(fold=0):
         tic1 = time.time()
 
         result_dict = trainer.train(train_loader, valid_loader, epoch,
-                                    result_dict, tokenizer, fold)
+                                    result_dict, tokenizer, fold, logger)
 
         torch.cuda.synchronize()
         tic2 = time.time()
@@ -571,13 +569,16 @@ if __name__ == '__main__':
     set_seed(Config.seed)
     result_list = []
     result_list2 = []
-    for fold in range(5):
-        print('----')
-        print(f'FOLD: {fold}')
-        result_dict = run(fold)
-        result_list.append(result_dict)
-        print('----')
-        result_list2.append(result_dict["best_val_loss"])
+    out_dir = Path(Config.out_dir)
+    out_dir.mkdir(exist_ok=True, parents=True)
     logger = init_logger(log_file=Config.out_dir + "/train.log")
+    for fold in range(5):
+        logger.info('----')
+        logger.info(f'FOLD: {fold}')
+        result_dict = run(fold, logger)
+        result_list.append(result_dict)
+        logger.info('----')
+        result_list2.append(result_dict["best_val_loss"])
     for i in range(5):
-        logger.info('fold ' + str(i)+ ':' + str(result_list2[i]))
+        logger.info('fold ' + str(i) + ':' + str(result_list2[i]))
+    logger.info('CV ' + ':' + str(np.mean(result_list2)))
