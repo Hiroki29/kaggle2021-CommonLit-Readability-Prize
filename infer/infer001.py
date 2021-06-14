@@ -302,7 +302,7 @@ if __name__ == '__main__':
                                  '../out/exp010_RoBERTa_large_FITv2/checkpoint/')
         test = pd.read_csv(Config.train_file)
         valid_set = test[test['kfold'] == fold]
-        rmse = np.sqrt(np.mean((test['target'] - pred_df1['target']) ** 2))
+        rmse = np.sqrt(np.mean((valid_set['target'] - pred_df1['target']) ** 2))
         print(rmse)
         result_list.append(rmse)
         # result_list.append(result_dict)
