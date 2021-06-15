@@ -178,7 +178,7 @@ class CommonLitModel(nn.Module):
         loss = None
         if labels is not None:
             # regression task
-            loss_fn = torch.nn.MSELoss()
+            loss_fn = torch.nn.MSELoss(reduction='sum')
             logits = logits.view(-1).to(labels.dtype)
             # loss = torch.sqrt(loss_fn(logits, labels.view(-1)))
             loss = loss_fn(logits, labels.view(-1))
@@ -450,6 +450,7 @@ class Evaluator:
     def evaluate(self, data_loader, epoch, result_dict, tokenizer):
         # preds = []
         self.model.eval()
+        count = 0
         losses = 0
         with torch.no_grad():
             for batch_idx, batch_data in enumerate(data_loader):
@@ -478,9 +479,11 @@ class Evaluator:
 
                 loss, logits = outputs[:2]
                 losses += loss
+                count += labels.size(0)
                 # logits = outputs[0].detach().cpu().numpy().squeeze().tolist()
                 # preds += logits
-        losses = np.sqrt(losses)
+        print(count)
+        losses = np.sqrt(losses.detach().cpu().numpy()/count)
         print('----Validation Results Summary----')
         print('Epoch: [{}] valid_loss: {: >4.5f}'.format(epoch, losses))
 

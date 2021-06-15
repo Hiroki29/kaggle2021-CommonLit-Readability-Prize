@@ -52,7 +52,7 @@ class Config:
     train_file = '../input/commonlitreadabilityprize/train_folds.csv'
     scaler = None
     model_name = 'roberta-base'
-    load_model_path = '../out/exp015_RoBERTa_base_FITv3/roberta-base-10-epochs20/checkpoint/'
+    load_model_path = '../out/exp018_RoBERTa_base_FIT_fixloss/roberta-base-1-epochs1/checkpoint/'
     filename = __file__.split("/")[-1].replace(".py", "")
     out_dir = '../out_infer/' + filename
 
