@@ -2,7 +2,7 @@ import gc
 import os
 import random
 import time
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -51,11 +51,10 @@ class Config:
     batch_size = 8
     train_file = '../input/commonlitreadabilityprize/train_folds.csv'
     scaler = None
-    tokenizer = 'roberta-large'
-    # filename = __file__.split("/")[-1].replace(".py", "")
-    # out_dir = '../out/' + filename
-    # check_dir = out_dir + '/checkpoint'
-
+    model_name = 'roberta-base'
+    load_model_path = '../out/exp015_RoBERTa_base_FITv3/roberta-base-10-epochs20/checkpoint/'
+    filename = __file__.split("/")[-1].replace(".py", "")
+    out_dir = '../out_infer/' + filename
 
 def convert_examples_to_features(data, tokenizer, max_len, is_test=False):
     data = data.replace('\n', '')
@@ -175,7 +174,7 @@ class CommonLitModel(nn.Module):
 
 
 def make_model(model_name, num_labels=1):
-    tokenizer = AutoTokenizer.from_pretrained(Config.tokenizer)
+    tokenizer = AutoTokenizer.from_pretrained(Config.model_name)
     config = AutoConfig.from_pretrained(model_name)
     config.update({'num_labels': num_labels})
     model = CommonLitModel(model_name, config=config)
@@ -254,10 +253,10 @@ def config(fold, model_name, load_model_path):
     )
 
     if torch.cuda.device_count() >= 1:
-        print('Model pushed to {} GPU(s), type {}.'.format(
-            torch.cuda.device_count(),
-            torch.cuda.get_device_name(0))
-        )
+        # print('Model pushed to {} GPU(s), type {}.'.format(
+        #     torch.cuda.device_count(),
+        #     torch.cuda.get_device_name(0))
+        # )
         model = model.cuda()
     else:
         raise ValueError('CPU training is not supported')
@@ -294,25 +293,18 @@ def run(fold=0, model_name=None, load_model_path=None):
 if __name__ == '__main__':
     set_seed(Config.seed)
     result_list = []
+    out_dir = Path(Config.out_dir)
+    out_dir.mkdir(exist_ok=True, parents=True)
+    logger = init_logger(log_file=Config.out_dir + "/infer.log")
+    logger.info(Config.train_file)
     for fold in range(5):
-        pred_df1 = pd.DataFrame()
-        print('----')
-        print(f'FOLD: {fold}')
-        pred_df1['target'] = run(fold, 'roberta-large',
-                                 '../out/exp010_RoBERTa_large_FITv2/checkpoint/')
+        print('fold' + str(fold) + ': start')
+        pred_df = pd.DataFrame()
+        pred_df['target'] = run(fold, Config.model_name, Config.load_model_path)
         test = pd.read_csv(Config.train_file)
-        valid_set = test[test['kfold'] == fold]
-        print(pred_df1.head())
-        print(valid_set.head())
-
-        print(len(pred_df1))
-        print(len(valid_set))
-        rmse = np.sqrt(np.mean((valid_set['target'] - pred_df1['target']) ** 2))
-        print(rmse)
+        valid_set = test[test['kfold'] == fold].reset_index(drop=True)
+        rmse = np.sqrt(np.mean((valid_set['target'] - pred_df['target']) ** 2))
         result_list.append(rmse)
-        # result_list.append(result_dict)
-        print('----')
-    print(result_list)
-    print(np.mean(result_list))
-    # logger = init_logger(log_file=Config.out_dir + "/train.log")
-    # logger.info(result_list)
+    for i in range(5):
+        logger.info('fold ' + str(i) + ':' + str(result_list[i]))
+    logger.info('CV ' + ':' + str(np.mean(result_list)))

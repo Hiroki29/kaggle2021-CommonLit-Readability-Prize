@@ -24,7 +24,7 @@ class TrainConfig:
     per_device_eval_batch_size = 8
     learning_rate = 5e-5
     weight_decay = 0.0
-    num_train_epochs = 5  # change to 5
+    num_train_epochs = 20  # change to 5
     max_train_steps = None
     gradient_accumulation_steps = 1
     lr_scheduler_type = 'constant_with_warmup'
