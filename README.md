@@ -188,3 +188,17 @@ You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multi
 * bert出力後にattentionheadをつけてみるとどうなるのか
 * attention head の埋め込み後にsvmを使用してPB0.474
 	* https://www.kaggle.com/maunish/clrp-roberta-svm
+
+### 20210615
+#### やることリスト
+* 結果のまとめの作成
+* SVMを用いることでの性能向上？
+* 以下を試したい
+* https://www.kaggle.com/rhtsingh/on-stability-of-few-sample-transformer-fine-tuning
+	* Debiasing Omission In BertADAM
+	* Re-Initializing Transformer Layers
+	* Utilizing Intermediate Layers
+	* Layer-wise Learning Rate Decay (LLRD)
+	* Mixout Regularization
+	* Pre-trained Weight Decay
+	* Stochastic Weight Averaging
