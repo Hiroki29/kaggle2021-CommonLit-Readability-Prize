@@ -391,7 +391,7 @@ class Trainer:
                     ('epoch: {:0>3} [{: >' + _s + '}/{} ({: >3.0f}%)]')
                         .format(epoch, count, len(train_loader.sampler),
                                 100 * count / len(train_loader.sampler)),
-                    'train_loss: {: >4.5f}'.format(losses.avg),
+                    'train_loss: {: >4.5f}'.format(np.sqrt(losses.avg)),
                 ]
                 print(', '.join(ret))
 
@@ -408,7 +408,7 @@ class Trainer:
                     result_dict["best_val_loss"] = result_dict['val_loss'][-1]
                     torch.save(self.model.state_dict(), f"{Config.check_dir}/model{fold}.bin")
 
-        result_dict['train_loss'].append(losses.avg)
+        result_dict['train_loss'].append(np.sqrt(losses.avg))
         return result_dict
 
 
