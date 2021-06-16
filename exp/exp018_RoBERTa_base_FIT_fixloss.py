@@ -320,7 +320,7 @@ class AverageMeter(object):
 
     def update(self, val, n=1):
         self.val = val
-        self.sum += val * n
+        self.sum += val
         self.count += n
         self.avg = self.sum / self.count
         if val > self.max:
@@ -373,7 +373,7 @@ class Trainer:
             loss, logits = outputs[:2]
             count += labels.size(0)
             losses.update(loss.item(), input_ids.size(0))
-
+            # print(losses.count)
             if self.scalar is not None:
                 self.scalar.scale(loss).backward()
                 self.scalar.step(self.optimizer)
@@ -391,7 +391,7 @@ class Trainer:
                     ('epoch: {:0>3} [{: >' + _s + '}/{} ({: >3.0f}%)]')
                         .format(epoch, count, len(train_loader.sampler),
                                 100 * count / len(train_loader.sampler)),
-                    'train_loss: {: >4.5f}'.format(np.sqrt(losses.avg)),
+                    'train_rmse: {: >4.5f}'.format(np.sqrt(losses.avg)),
                 ]
                 print(', '.join(ret))
 
@@ -403,7 +403,7 @@ class Trainer:
                     valid_loader, epoch, result_dict, tokenizer
                 )
                 if result_dict['val_loss'][-1] < result_dict['best_val_loss']:
-                    logger.info("{} epoch, best epoch was updated! valid_loss: {: >4.5f}"
+                    logger.info("{} epoch, best epoch was updated! valid_rmse: {: >4.5f}"
                                 .format(epoch, result_dict['val_loss'][-1]))
                     result_dict["best_val_loss"] = result_dict['val_loss'][-1]
                     torch.save(self.model.state_dict(), f"{Config.check_dir}/model{fold}.bin")
@@ -482,10 +482,10 @@ class Evaluator:
                 count += labels.size(0)
                 # logits = outputs[0].detach().cpu().numpy().squeeze().tolist()
                 # preds += logits
-        print(count)
+        # print(count)
         losses = np.sqrt(losses.detach().cpu().numpy()/count)
         print('----Validation Results Summary----')
-        print('Epoch: [{}] valid_loss: {: >4.5f}'.format(epoch, losses))
+        print('Epoch: [{}] valid_rmse: {: >4.5f}'.format(epoch, losses))
 
         result_dict['val_loss'].append(losses)
         return result_dict
