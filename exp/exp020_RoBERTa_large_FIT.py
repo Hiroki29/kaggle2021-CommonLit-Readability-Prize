@@ -53,9 +53,9 @@ def init_logger(log_file='train.log'):  # コンソールとログファイル�
 # =================================================
 class Config:
     seed = 42
-    epochs = 1
-    max_len = 300
-    batch_size = 16
+    epochs = 10
+    max_len = 320
+    batch_size = 8
     model_name = '../out/exp016_RoBERTa_large_ITPTv2/roberta-large-5-epochs/'
     train_file = '../input/commonlitreadabilityprize/train_folds.csv'
     warmup_proportion = 1
@@ -65,11 +65,13 @@ class Config:
     learning_rate = 2e-5
     tokenizer = 'roberta-large'
     filename = __file__.replace(".py", "")
-    out_dir = '../out/' + filename + '/roberta-base-1-epochs' + str(epochs)
+    out_dir = '../out/' + filename + '/roberta-large-5-epochs' + str(epochs) + 'mul32_0.3'
     check_dir = out_dir + '/checkpoint'
     log_interval = 10
     evaluate_interval = 40
     multisample_dropout = True
+    multisample_dropout_num = 32
+    multisample_dropout_rate = 0.3
 
 
 def convert_examples_to_features(data, tokenizer, max_len):
@@ -127,7 +129,7 @@ class CommonLitModel(nn.Module):
         self.layer_norm = nn.LayerNorm(config.hidden_size)
         if multisample_dropout:
             self.dropouts = nn.ModuleList([
-                nn.Dropout(0.5) for _ in range(5)
+                nn.Dropout(Config.multisample_dropout_rate) for _ in range(Config.multisample_dropout_num)
             ])
         else:
             self.dropouts = nn.ModuleList([nn.Dropout(0.3)])
