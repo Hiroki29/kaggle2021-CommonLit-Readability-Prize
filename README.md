@@ -214,3 +214,6 @@ You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multi
 		* Hidden Layers Output
 * モデルだけでなく原点に立ち返ってデータから分かることも有るはず
 * 他の自然言語処理のタスクからも応用できることを探すべき
+* 前処理、後処理について考える必要あり
+	* 前処理:	 
+	* 後処理:  	
