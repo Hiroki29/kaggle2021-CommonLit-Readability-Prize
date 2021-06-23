@@ -202,3 +202,15 @@ You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multi
 	* Mixout Regularization
 	* Pre-trained Weight Decay
 	* Stochastic Weight Averaging
+
+### 20210624
+#### やることリスト
+* 他のデータの切り方で試す
+	* https://www.kaggle.com/shahules/guide-pytorch-data-samplers-sequence-bucketing 	
+* [Utilizing Transformer Representations Efficiently](https://www.kaggle.com/c/commonlitreadabilityprize/discussion/247615)
+	* pooler embedingを使用するだけでは少ない、様々な層の中間表現を利用
+		* Pooler Output
+		* Last Hidden State Output
+		* Hidden Layers Output
+* モデルだけでなく原点に立ち返ってデータから分かることも有るはず
+* 他の自然言語処理のタスクからも応用できることを探すべき
