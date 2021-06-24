@@ -216,4 +216,10 @@ You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multi
 * 他の自然言語処理のタスクからも応用できることを探すべき
 * 前処理、後処理について考える必要あり
 	* 前処理:	 
-	* 後処理:  	
+	* 後処理:
+	  	
+### 20210625
+#### やることリスト
+* ゼロ作で最適化、BNについて復習　コード動かす
+* schedulerについて勉強
+* layer毎にschedulerどのように変えているのかを調べる
