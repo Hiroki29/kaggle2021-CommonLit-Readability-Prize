@@ -223,3 +223,6 @@ You can see example code here: https://github.com/moizsaifee/kaggle-jigsaw-multi
 * ゼロ作で最適化、BNについて復習　コード動かす
 * schedulerについて勉強
 * layer毎にschedulerどのように変えているのかを調べる
+* optimizer毎に損失関数を可視化するべき　こんな感じに
+	<img width="483" alt="スクリーンショット 2021-06-25 12 20 34" src="https://user-images.githubusercontent.com/56621409/123364636-bfdf2f00-d5af-11eb-83d5-6cc204b23486.png">
+ 	
